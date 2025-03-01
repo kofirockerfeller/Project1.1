@@ -6,6 +6,7 @@ import app.config as config
 
 def get_db_connection() -> sqldb.Connection:
     """Establish and return a database connection."""
+    print(f"Connecting to database: user={config.DB_USER}, host={config.DB_HOST}, database={config.DB_DATABASE}")
     return sqldb.connect(
         user=config.DB_USER,
         password=config.DB_PASSWORD,
