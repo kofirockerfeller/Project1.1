@@ -180,36 +180,30 @@ def find_youngest_oldest_actors():
      AND p.dob IS NOT NULL;
    """
 
-
    with Database() as db:
        actors = db.execute(query)
-  
-   # Filter out actors with null ages (if any)
-   actors = [actor for actor in actors if actor["age"] is not None]
+
+   # Filter out actors with null ages
+   actors = [actor for actor in actors if actor[1] is not None]
+
    if actors:
-       # Convert to list of (name, age) for easier processing
-       actor_tuples = [(a["name"], a["age"]) for a in actors]
+       min_age = min(actors, key=lambda x: x[1])[1]
+       max_age = max(actors, key=lambda x: x[1])[1]
 
-
-       min_age = min(actor_tuples, key=lambda x: x[1])[1]
-       max_age = max(actor_tuples, key=lambda x: x[1])[1]
-
-
-       youngest_actors = [actor for actor in actor_tuples if actor[1] == min_age]
-       oldest_actors = [actor for actor in actor_tuples if actor[1] == max_age]
-
+       youngest_actors = [actor for actor in actors if actor[1] == min_age]
+       oldest_actors = [actor for actor in actors if actor[1] == max_age]
 
        return render_template(
            "actors_by_age.html",
-           youngest_actors=youngest_actors,
-           oldest_actors=oldest_actors,
+           youngest_actors=youngest_actors,  
+           oldest_actors=oldest_actors      
        )
    else:
        return render_template(
-           "actors_by_age.html", youngest_actors=[], oldest_actors=[]
+           "actors_by_age.html",
+           youngest_actors=[],
+           oldest_actors=[]
        )
-
-
 
 
 @queries_bp.route("/search_producers", methods=["POST"])
